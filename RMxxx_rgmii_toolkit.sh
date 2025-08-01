@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Define toolkit paths
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usrdata/opt/bin:/usrdata/opt/sbin:/usrdata/root/bin
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usrdata/opt/opt/bin:/usrdata/opt/opt/sbin:/usrdata/root/bin
 GITUSER="bluenecko"
 REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
@@ -109,7 +109,7 @@ send_at_commands() {
 # Check for existing Entware/opkg installation, install if not installed
 ensure_entware_installed() {
 	remount_rw
-    if [ ! -f "/usrdata/opt/bin/opkg" ]; then
+    if [ ! -f "/usrdata/opt/opt/bin/opkg" ]; then
         echo -e "\e[1;32mInstalling Entware/OPKG\e[0m"
         cd /tmp && wget -O installentware.sh "$GITROOT/installentware.sh" && chmod +x installentware.sh && ./installentware.sh
         if [ "$?" -ne 0 ]; then
@@ -119,7 +119,7 @@ ensure_entware_installed() {
         cd /
     else
         echo -e "\e[1;32mEntware/OPKG is already installed.\e[0m"
-        # if [ "$(readlink /bin/login)" != "/usrdata/opt/bin/login" ]; then
+        # if [ "$(readlink /bin/login)" != "/usrdata/opt/opt/bin/login" ]; then
         #     opkg update && opkg install shadow-login shadow-passwd shadow-useradd
         #     if [ "$?" -ne 0 ]; then
         #         echo -e "\e[1;31mPackage installation failed. Please check your internet connection and try again.\e[0m"
@@ -127,29 +127,29 @@ ensure_entware_installed() {
         #     fi
 
         #     # Replace the login and passwd binaries and set home for root to a writable directory
-        #     rm /usrdata/opt/etc/shadow
-        #     rm /usrdata/opt/etc/passwd
-        #     cp /etc/shadow /usrdata/opt/etc/
-        #     cp /etc/passwd /usrdata/opt/etc
+        #     rm /usrdata/opt/opt/etc/shadow
+        #     rm /usrdata/opt/opt/etc/passwd
+        #     cp /etc/shadow /usrdata/opt/opt/etc/
+        #     cp /etc/passwd /usrdata/opt/opt/etc
         #     mkdir -p /usrdata/root/bin
         #     touch /usrdata/root/.profile
         #     echo "# Set PATH for all shells" > /usrdata/root/.profile
-        #     echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
+        #     echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/opt/sbin:/usrdata/opt/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
         #     chmod +x /usrdata/root/.profile
-        #     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
+        #     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/opt/etc/passwd
         #     rm /bin/login /usr/bin/passwd
-        #     ln -sf /usrdata/opt/bin/login /bin
-        #     ln -sf /usrdata/opt/bin/passwd /usr/bin/
-		# 	ln -sf /usrdata/opt/bin/useradd /usr/bin/
+        #     ln -sf /usrdata/opt/opt/bin/login /bin
+        #     ln -sf /usrdata/opt/opt/bin/passwd /usr/bin/
+		# 	ln -sf /usrdata/opt/opt/bin/useradd /usr/bin/
         #     echo -e "\e[1;31mPlease set the root password.\e[0m"
-        #     /usrdata/opt/bin/passwd
+        #     /usrdata/opt/opt/bin/passwd
 
         #     # Install basic and useful utilities
         #     opkg install mc htop dfc lsof
-        #     ln -sf /usrdata/opt/bin/mc /bin
-        #     ln -sf /usrdata/opt/bin/htop /bin
-        #     ln -sf /usrdata/opt/bin/dfc /bin
-        #     ln -sf /usrdata/opt/bin/lsof /bin
+        #     ln -sf /usrdata/opt/opt/bin/mc /bin
+        #     ln -sf /usrdata/opt/opt/bin/htop /bin
+        #     ln -sf /usrdata/opt/opt/bin/dfc /bin
+        #     ln -sf /usrdata/opt/opt/bin/lsof /bin
         # fi
 
         # if [ ! -f "/usrdata/root/.profile" ]; then
@@ -157,19 +157,19 @@ ensure_entware_installed() {
         #     mkdir -p /usrdata/root/bin
         #     touch /usrdata/root/.profile
         #     echo "# Set PATH for all shells" > /usrdata/root/.profile
-        #     echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
+        #     echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/opt/sbin:/usrdata/opt/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
         #     chmod +x /usrdata/root/.profile
-        #     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
+        #     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/opt/etc/passwd
         # fi
     fi
-	# if [ ! -f "/usrdata/opt/sbin/useradd" ]; then
+	# if [ ! -f "/usrdata/opt/opt/sbin/useradd" ]; then
 	# 	echo "useradd does not exist. Installing shadow-useradd..."
 	# 	opkg install shadow-useradd
 	# 	else
 	# 	echo "useradd already exists. Continuing..."
 	# fi
     
-	# if [ ! -f "/usr/bin/curl" ] && [ ! -f "/usrdata/opt/bin/curl" ]; then
+	# if [ ! -f "/usr/bin/curl" ] && [ ! -f "/usrdata/opt/opt/bin/curl" ]; then
     #     echo "curl does not exist. Installing curl..."
     #     opkg update && opkg install curl 
     #     if [ "$?" -ne 0 ]; then
@@ -187,7 +187,7 @@ uninstall_entware() {
 
     # Stop services
     systemctl stop rc.unslung.service
-    /usrdata/opt/etc/init.d/rc.unslung stop
+    /usrdata/opt/opt/etc/init.d/rc.unslung stop
     rm /lib/systemd/system/multi-user.target.wants/rc.unslung.service
     rm /lib/systemd/system/rc.unslung.service
     
@@ -319,7 +319,7 @@ set_simpleadmin_passwd(){
 
 set_root_passwd() {
 	echo -e "\e[1;31mPlease set the root/console password.\e[0m"
-	/usrdata/opt/bin/passwd
+	/usrdata/opt/opt/bin/passwd
 }
 
 # Function to install/update Simple Admin
