@@ -1,9 +1,9 @@
 #!/bin/sh
 
 # Define toolkit paths
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin:/usrdata/root/bin
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usrdata/opt/bin:/usrdata/opt/sbin:/usrdata/root/bin
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -25,12 +25,14 @@ DEVICE_FILE="/dev/smd7"
 TIMEOUT=4  # Set a timeout for the response
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 
 # Basic AT commands without socat bridge for fast responce commands only
@@ -107,7 +109,7 @@ send_at_commands() {
 # Check for existing Entware/opkg installation, install if not installed
 ensure_entware_installed() {
 	remount_rw
-    if [ ! -f "/opt/bin/opkg" ]; then
+    if [ ! -f "/usrdata/opt/bin/opkg" ]; then
         echo -e "\e[1;32mInstalling Entware/OPKG\e[0m"
         cd /tmp && wget -O installentware.sh "$GITROOT/installentware.sh" && chmod +x installentware.sh && ./installentware.sh
         if [ "$?" -ne 0 ]; then
@@ -117,7 +119,7 @@ ensure_entware_installed() {
         cd /
     else
         echo -e "\e[1;32mEntware/OPKG is already installed.\e[0m"
-        if [ "$(readlink /bin/login)" != "/opt/bin/login" ]; then
+        if [ "$(readlink /bin/login)" != "/usrdata/opt/bin/login" ]; then
             opkg update && opkg install shadow-login shadow-passwd shadow-useradd
             if [ "$?" -ne 0 ]; then
                 echo -e "\e[1;31mPackage installation failed. Please check your internet connection and try again.\e[0m"
@@ -125,29 +127,29 @@ ensure_entware_installed() {
             fi
 
             # Replace the login and passwd binaries and set home for root to a writable directory
-            rm /opt/etc/shadow
-            rm /opt/etc/passwd
-            cp /etc/shadow /opt/etc/
-            cp /etc/passwd /opt/etc
+            rm /usrdata/opt/etc/shadow
+            rm /usrdata/opt/etc/passwd
+            cp /etc/shadow /usrdata/opt/etc/
+            cp /etc/passwd /usrdata/opt/etc
             mkdir -p /usrdata/root/bin
             touch /usrdata/root/.profile
             echo "# Set PATH for all shells" > /usrdata/root/.profile
-            echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/opt/sbin:/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
+            echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
             chmod +x /usrdata/root/.profile
-            sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /opt/etc/passwd
+            sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
             rm /bin/login /usr/bin/passwd
-            ln -sf /opt/bin/login /bin
-            ln -sf /opt/bin/passwd /usr/bin/
-			ln -sf /opt/bin/useradd /usr/bin/
+            ln -sf /usrdata/opt/bin/login /bin
+            ln -sf /usrdata/opt/bin/passwd /usr/bin/
+			ln -sf /usrdata/opt/bin/useradd /usr/bin/
             echo -e "\e[1;31mPlease set the root password.\e[0m"
-            /opt/bin/passwd
+            /usrdata/opt/bin/passwd
 
             # Install basic and useful utilities
             opkg install mc htop dfc lsof
-            ln -sf /opt/bin/mc /bin
-            ln -sf /opt/bin/htop /bin
-            ln -sf /opt/bin/dfc /bin
-            ln -sf /opt/bin/lsof /bin
+            ln -sf /usrdata/opt/bin/mc /bin
+            ln -sf /usrdata/opt/bin/htop /bin
+            ln -sf /usrdata/opt/bin/dfc /bin
+            ln -sf /usrdata/opt/bin/lsof /bin
         fi
 
         if [ ! -f "/usrdata/root/.profile" ]; then
@@ -155,21 +157,21 @@ ensure_entware_installed() {
             mkdir -p /usrdata/root/bin
             touch /usrdata/root/.profile
             echo "# Set PATH for all shells" > /usrdata/root/.profile
-            echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/opt/sbin:/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
+            echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
             chmod +x /usrdata/root/.profile
-            sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /opt/etc/passwd
+            sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
         fi
     fi
-	if [ ! -f "/opt/sbin/useradd" ]; then
+	if [ ! -f "/usrdata/opt/sbin/useradd" ]; then
 		echo "useradd does not exist. Installing shadow-useradd..."
 		opkg install shadow-useradd
 		else
 		echo "useradd already exists. Continuing..."
 	fi
     
-	if [ ! -f "/usr/bin/curl" ] && [ ! -f "/opt/bin/curl" ]; then
+	if [ ! -f "/usr/bin/curl" ] && [ ! -f "/usrdata/opt/bin/curl" ]; then
         echo "curl does not exist. Installing curl..."
-        opkg update && opkg install curl
+        opkg update && opkg install curl 
         if [ "$?" -ne 0 ]; then
             echo -e "\e[1;31mFailed to install curl. Please check your internet connection and try again.\e[0m"
             exit 1
@@ -185,21 +187,20 @@ uninstall_entware() {
 
     # Stop services
     systemctl stop rc.unslung.service
-    /opt/etc/init.d/rc.unslung stop
+    /usrdata/opt/etc/init.d/rc.unslung stop
     rm /lib/systemd/system/multi-user.target.wants/rc.unslung.service
     rm /lib/systemd/system/rc.unslung.service
     
     systemctl stop opt.mount
     rm /lib/systemd/system/multi-user.target.wants/start-opt-mount.service
-    rm /lib/systemd/system/opt.mount
+    rm /lib/systemd/system/usrdata/opt.mount
     rm /lib/systemd/system/start-opt-mount.service
 
-    # Unmount /opt if mounted
-    mountpoint -q /opt && umount /opt
+    # Unmount /usrdata/opt if mounted
+    mountpoint -q /usrdata/opt && umount /usrdata/opt
 
     # Remove Entware installation directory
     rm -rf /usrdata/opt
-    rm -rf /opt
 
     # Reload systemctl daemon
     systemctl daemon-reload
@@ -318,7 +319,7 @@ set_simpleadmin_passwd(){
 
 set_root_passwd() {
 	echo -e "\e[1;31mPlease set the root/console password.\e[0m"
-	/opt/bin/passwd
+	/usrdata/opt/bin/passwd
 }
 
 # Function to install/update Simple Admin
@@ -824,6 +825,7 @@ echo "                                           :+##+.            "
 
     echo -e "\e[92m"
     echo "Welcome to iamromulan's RGMII Toolkit script for Quectel RMxxx Series modems!"
+    echo "MODDED-BY:@BlueNecko"
     echo "Visit https://github.com/iamromulan for more!"
     echo -e "\e[0m"
     echo "Select an option:"

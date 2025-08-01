@@ -2,8 +2,8 @@
 
 # Define constants
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -39,8 +39,8 @@ cat <<EOF > "$TMP_SCRIPT"
 #!/bin/bash
 
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -58,22 +58,22 @@ echo -e "\e[1;32mOpenSSH Server\e[0m"
     	ln -sf "/lib/systemd/system/sshd.service" "/lib/systemd/system/multi-user.target.wants/"
         
         opkg install openssh-server-pam
-        for script in /opt/etc/init.d/*sshd*; do
+        for script in /usrdata/opt/etc/init.d/*sshd*; do
         if [ -f "$script" ]; then
             echo "Removing existing sshd init script: $script"
             rm "$script" # Remove the script if it contains 'sshd' in its name
         fi
 		done
-        /opt/bin/ssh-keygen -A
+        /usrdata/opt/bin/ssh-keygen -A
         systemctl daemon-reload
         systemctl enable sshd
 
         # Enable PAM and PermitRootLogin
-        sed -i "s/^.*UsePAM .*/UsePAM yes/" "/opt/etc/ssh/sshd_config"
-        sed -i "s/^.*PermitRootLogin .*/PermitRootLogin yes/" "/opt/etc/ssh/sshd_config"
+        sed -i "s/^.*UsePAM .*/UsePAM yes/" "/usrdata/opt/etc/ssh/sshd_config"
+        sed -i "s/^.*PermitRootLogin .*/PermitRootLogin yes/" "/usrdata/opt/etc/ssh/sshd_config"
 
-        # Ensure the sshd user exists in the /opt/etc/passwd file
-        grep "sshd:x:106" /opt/etc/passwd || echo "sshd:x:106:65534:Linux User,,,:/opt/run/sshd:/bin/nologin" >> /opt/etc/passwd
+        # Ensure the sshd user exists in the /usrdata/opt/etc/passwd file
+        grep "sshd:x:106" /usrdata/opt/etc/passwd || echo "sshd:x:106:65534:Linux User,,,:/usrdata/opt/run/sshd:/bin/nologin" >> /opt/etc/passwd
         systemctl start sshd
 
 	    echo -e "\e[1;32mOpenSSH installed!!\e[0m"

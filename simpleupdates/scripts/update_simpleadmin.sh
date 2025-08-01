@@ -2,8 +2,8 @@
 
 # Define constants
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -17,18 +17,20 @@ SERVICE_FILE="/lib/systemd/system/install_simpleadmin.service"
 SERVICE_NAME="install_simpleadmin"
 TMP_SCRIPT="/tmp/install_simpleadmin.sh"
 LOG_FILE="/tmp/install_simpleadmin.log"
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin:/usrdata/root/bin
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usrdata/opt/bin:/usrdata/opt/sbin:/usrdata/root/bin
 
 # Tmp Script dependent constants 
 SIMPLE_ADMIN_DIR="/usrdata/simpleadmin"
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 
 # Installation Prep
@@ -55,8 +57,8 @@ cat <<EOF > "$TMP_SCRIPT"
 #!/bin/bash
 
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -67,16 +69,18 @@ GITROOTDEV="https://raw.githubusercontent.com/$GITUSER/$REPONAME/$GITDEVTREE"
 # Define filesystem path
 SIMPLE_ADMIN_DIR="/usrdata/simpleadmin"
 export HOME=/usrdata/root
-export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin:/usrdata/root/bin
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usrdata/opt/bin:/usrdata/opt/sbin:/usrdata/root/bin
 
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 remount_rw
 uninstall_simpleadmin() {
@@ -116,10 +120,10 @@ install_lighttpd() {
         rm /lib/systemd/system/multi-user.target.wants/simpleadmin_httpd.service
     fi
 
-    /opt/bin/opkg install sudo lighttpd lighttpd-mod-auth lighttpd-mod-authn_file lighttpd-mod-cgi lighttpd-mod-openssl lighttpd-mod-proxy
+    /usrdata/opt/bin/opkg install sudo lighttpd lighttpd-mod-auth lighttpd-mod-authn_file lighttpd-mod-cgi lighttpd-mod-openssl lighttpd-mod-proxy
     # Ensure rc.unslung doesn't try to start it
     # Dynamically find and remove any Lighttpd-related init script
-    for script in /opt/etc/init.d/*lighttpd*; do
+    for script in /usrdata/opt/etc/init.d/*lighttpd*; do
         if [ -f "$script" ]; then
             echo "Removing existing Lighttpd init script: $script"
             rm "$script" # Remove the script if it contains 'lighttpd' in its name
@@ -131,7 +135,7 @@ install_lighttpd() {
     wget -O "$SIMPLE_ADMIN_DIR/lighttpd.conf" $GITROOT/simpleadmin/lighttpd.conf
     wget -O "/lib/systemd/system/lighttpd.service" $GITROOT/simpleadmin/systemd/lighttpd.service
     ln -sf "/lib/systemd/system/lighttpd.service" "/lib/systemd/system/multi-user.target.wants/"
-    echo "www-data ALL = (root) NOPASSWD: /usr/sbin/iptables, /usr/sbin/ip6tables, /usrdata/simplefirewall/ttl-override, /bin/echo, /bin/cat" > /opt/etc/sudoers.d/www-data
+    echo "www-data ALL = (root) NOPASSWD: /usr/sbin/iptables, /usr/sbin/ip6tables, /usrdata/simplefirewall/ttl-override, /bin/echo, /bin/cat" > /usrdata/opt/etc/sudoers.d/www-data
 
     openssl req -new -newkey rsa:2048 -days 3650 -nodes -x509 \
         -subj "/C=US/ST=MI/L=Romulus/O=RMIITools/CN=localhost" \

@@ -2,8 +2,8 @@
 
 # Define constants
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -23,12 +23,14 @@ TAILSCALE_DIR="/usrdata/tailscale/"
 TAILSCALE_SYSD_DIR="/usrdata/tailscale/systemd"
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 
 # Installation Prep
@@ -57,8 +59,8 @@ cat <<EOF > "$TMP_SCRIPT"
 export HOME=/usrdata/root
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin:/usrdata/root/bin
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -71,12 +73,14 @@ TAILSCALE_SYSD_DIR="/usrdata/tailscale/systemd"
 
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 
 install_update_tailscale() {

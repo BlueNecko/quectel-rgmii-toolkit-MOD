@@ -2,8 +2,8 @@
 
 # Define constants
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -25,12 +25,14 @@ SIMPLE_FIREWALL_SYSTEMD_DIR="$SIMPLE_FIREWALL_DIR/systemd"
 
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 remount_rw
 # Create the systemd service file
@@ -51,8 +53,8 @@ cat <<EOF > "$TMP_SCRIPT"
 #!/bin/bash
 
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -67,12 +69,15 @@ SIMPLE_FIREWALL_SYSTEMD_DIR="$SIMPLE_FIREWALL_DIR/systemd"
 
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+remount_rw() {
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 remount_rw
 # Function to remove Simple Firewall
@@ -91,7 +96,7 @@ install_simple_firewall() {
     systemctl stop simplefirewall
     systemctl stop ttl-override
     echo -e "\033[0;32mInstalling/Updating Simple Firewall...\033[0m"
-    mount -o remount,rw /
+    #mount -o remount,rw /
     mkdir -p "$SIMPLE_FIREWALL_DIR"
     mkdir -p "$SIMPLE_FIREWALL_SYSTEMD_DIR"
     wget -O "$SIMPLE_FIREWALL_DIR/simplefirewall.sh" $GITROOT/simplefirewall/simplefirewall.sh

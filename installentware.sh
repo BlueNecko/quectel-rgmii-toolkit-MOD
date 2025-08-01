@@ -1,5 +1,5 @@
 #!/bin/sh
-# Modified by iamromulan to set up a proper entware environment for Quectel RM5xx series m.2 modems
+# Modified by BlueNecko to set up a proper entware environment for custom Quectel RG520F series LGA modems 
 TYPE='generic'
 #|---------|-----------------|
 #| TARGET  | Quectel Modem   |
@@ -14,47 +14,6 @@ LOADER=ld-linux.so.3
 GLIBC=2.27
 PRE_OPKG_PATH=$(which opkg)
 
-# Remount filesystem as read-write
-mount -o remount,rw /
-
-create_opt_mount() {
-    # Bind /usrdata/opt to /opt
-    echo -e '\033[32mInfo: Setting up /opt mount to /usrdata/opt...\033[0m'
-    cat <<EOF > /lib/systemd/system/opt.mount
-[Unit]
-Description=Bind /usrdata/opt to /opt
-
-[Mount]
-What=/usrdata/opt
-Where=/opt
-Type=none
-Options=bind
-
-[Install]
-WantedBy=multi-user.target
-EOF
-    
-    systemctl daemon-reload
-    systemctl start opt.mount
-    
-    # Additional systemd service to ensure opt.mount starts at boot
-    echo -e '\033[32mInfo: Creating service to start opt.mount at boot...\033[0m'
-    cat <<EOF > /lib/systemd/system/start-opt-mount.service
-[Unit]
-Description=Ensure opt.mount is started at boot
-After=network.target
-
-[Service]
-Type=oneshot
-ExecStart=/bin/systemctl start opt.mount
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    systemctl daemon-reload
-    ln -s /lib/systemd/system/start-opt-mount.service /lib/systemd/system/multi-user.target.wants/start-opt-mount.service
-}
 
 if [ -n "$PRE_OPKG_PATH" ]; then
     # Automatically rename the existing opkg binary
@@ -65,47 +24,47 @@ else
 fi
 
 echo -e '\033[32mInfo: Creating /opt mount pointed to /usrdata/opt ...\033[0m'
-create_opt_mount
+
 echo -e '\033[32mInfo: Proceeding with main installation ...\033[0m'
 # no need to create many folders. entware-opt package creates most
 for folder in bin etc lib/opkg tmp var/lock
 do
-  if [ -d "/opt/$folder" ]; then
-    echo -e '\033[31mWarning: Folder /opt/$folder exists!\033[0m'
-    echo -e '\033[31mWarning: If something goes wrong please clean /opt folder and try again.\033[0m'
+  if [ -d "/usrdata/opt/$folder" ]; then
+    echo -e '\033[31mWarning: Folder /usrdata/opt/$folder exists!\033[0m'
+    echo -e '\033[31mWarning: If something goes wrong please clean /usrdata/opt folder and try again.\033[0m'
   else
-    mkdir -p /opt/$folder
+    mkdir -p /usrdata/opt/$folder
   fi
 done
 
 echo -e '\033[32mInfo: Opkg package manager deployment...\033[0m'
 URL=http://bin.entware.net/${ARCH}/installer
-wget $URL/opkg -O /opt/bin/opkg
-chmod 755 /opt/bin/opkg
-wget $URL/opkg.conf -O /opt/etc/opkg.conf
+wget $URL/opkg -O /usrdata/opt/bin/opkg
+chmod 755 /usrdata/opt/bin/opkg
+wget $URL/opkg.conf -O /usrdata/opt/etc/opkg.conf
 
 echo -e '\033[32mInfo: Basic packages installation...\033[0m'
-/opt/bin/opkg update
-/opt/bin/opkg install entware-opt
+/usrdata/opt/bin/opkg update
+/usrdata/opt/bin/opkg install entware-opt
 
 # Fix for multiuser environment
-chmod 777 /opt/tmp
+chmod 777 /usrdata/opt/tmp
 
 for file in passwd group shells shadow gshadow; do
   if [ $TYPE = 'generic' ]; then
     if [ -f /etc/$file ]; then
-      ln -sf /etc/$file /opt/etc/$file
+      ln -sf /etc/$file /usrdata/opt/etc/$file
     else
-      [ -f /opt/etc/$file.1 ] && cp /opt/etc/$file.1 /opt/etc/$file
+      [ -f /usrdata/opt/etc/$file.1 ] && cp /usrdata/opt/etc/$file.1 /usrdata/opt/etc/$file
     fi
   else
-    if [ -f /opt/etc/$file.1 ]; then
-      cp /opt/etc/$file.1 /opt/etc/$file
+    if [ -f /usrdata/opt/etc/$file.1 ]; then
+      cp /usrdata/opt/etc/$file.1 /usrdata/opt/etc/$file
     fi
   fi
 done
 
-[ -f /etc/localtime ] && ln -sf /etc/localtime /opt/etc/localtime
+[ -f /etc/localtime ] && ln -sf /etc/localtime /usrdata/opt/etc/localtime
 
 # Create and enable rc.unslung service
 echo -e '\033[32mInfo: Creating rc.unslung (Entware init.d service)...\033[0m'
@@ -115,9 +74,9 @@ Description=Start Entware services
 
 [Service]
 Type=oneshot
-# Add a delay to give /opt time to mount
+# Add a delay to give /usrdata/opt time to mount
 ExecStartPre=/bin/sleep 5
-ExecStart=/opt/etc/init.d/rc.unslung start
+ExecStart=/usrdata/opt/etc/init.d/rc.unslung start
 RemainAfterExit=yes
 
 [Install]
@@ -129,8 +88,8 @@ ln -s /lib/systemd/system/rc.unslung.service /lib/systemd/system/multi-user.targ
 systemctl start rc.unslung.service
 echo -e '\033[32mInfo: Congratulations!\033[0m'
 echo -e '\033[32mInfo: If there are no errors above then Entware was successfully initialized.\033[0m'
-echo -e '\033[32mInfo: Add /opt/bin & /opt/sbin to $PATH variable\033[0m'
-ln -sf /opt/bin/opkg /bin
+echo -e '\033[32mInfo: Add /usrdata/opt/bin & /usrdata/opt/sbin to $PATH variable\033[0m'
+ln -sf /usrdata/opt/bin/opkg /bin
 echo -e '\033[32mInfo: Patching Quectel Login Binary\033[0m'
 opkg update && opkg install shadow-login shadow-passwd shadow-useradd
     if [ "$?" -ne 0 ]; then
@@ -139,10 +98,10 @@ opkg update && opkg install shadow-login shadow-passwd shadow-useradd
     fi
 
     # Replace the login and passwd binaries and set home for root to a writable directory
-    rm /opt/etc/shadow
-    rm /opt/etc/passwd
-    cp /etc/shadow /opt/etc/
-    cp /etc/passwd /opt/etc
+    rm /usrdata/opt/etc/shadow
+    rm /usrdata/opt/etc/passwd
+    cp /etc/shadow /usrdata/opt/etc/
+    cp /etc/passwd /usrdata/opt/etc
     mkdir /usrdata/root
     mkdir /usrdata/root/bin
     touch /usrdata/root/.profile
@@ -152,16 +111,16 @@ opkg update && opkg install shadow-login shadow-passwd shadow-useradd
     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /opt/etc/passwd
     rm /bin/login /usr/bin/passwd
     ln -sf /opt/bin/login /bin
-    ln -sf /opt/bin/passwd /usr/bin/
-	ln -sf /opt/bin/useradd /usr/bin/
+    ln -sf /usrdata/opt/bin/passwd /usr/bin/
+	ln -sf /usrdata/opt/bin/useradd /usr/bin/
     echo -e "\e[1;31mPlease set the root password.\e[0m"
     /usr/bin/passwd
 
     # Install basic and useful utilites
     opkg install mc htop dfc lsof
-    ln -sf /opt/bin/mc /bin
-    ln -sf /opt/bin/htop /bin
-    ln -sf /opt/bin/dfc /bin
-    ln -sf /opt/bin/lsof /bin
+    ln -sf /usrdata/opt/bin/mc /bin
+    ln -sf /usrdata/opt/bin/htop /bin
+    ln -sf /usrdata/opt/bin/dfc /bin
+    ln -sf /usrdata/opt/bin/lsof /bin
 # Remount filesystem as read-only
 mount -o remount,ro /

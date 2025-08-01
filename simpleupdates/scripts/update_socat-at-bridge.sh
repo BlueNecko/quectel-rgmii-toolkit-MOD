@@ -2,8 +2,8 @@
 
 # Define constants
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -22,12 +22,14 @@ SOCAT_AT_DIR="/usrdata/socat-at-bridge"
 SOCAT_AT_SYSD_DIR="/usrdata/socat-at-bridge/systemd_units"
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 remount_rw
 # Create the systemd service file
@@ -48,8 +50,8 @@ cat <<EOF > "$TMP_SCRIPT"
 #!/bin/bash
 
 # Define GitHub repo info
-GITUSER="iamromulan"
-REPONAME="quectel-rgmii-toolkit"
+GITUSER="BlueNecko"
+REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
 GITDEVTREE="development-SDXLEMUR"
@@ -63,12 +65,14 @@ SOCAT_AT_SYSD_DIR="/usrdata/socat-at-bridge/systemd_units"
 
 # Function to remount file system as read-write
 remount_rw() {
-    mount -o remount,rw /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,rw /
 }
 
 # Function to remount file system as read-only
 remount_ro() {
-    mount -o remount,ro /
+    echo "##### SKIPPING REMOUNTS #####"
+    #mount -o remount,ro /
 }
 remount_rw
 uninstall_at_socat() {
