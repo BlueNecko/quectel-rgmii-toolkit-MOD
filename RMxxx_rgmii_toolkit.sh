@@ -119,66 +119,66 @@ ensure_entware_installed() {
         cd /
     else
         echo -e "\e[1;32mEntware/OPKG is already installed.\e[0m"
-        if [ "$(readlink /bin/login)" != "/usrdata/opt/bin/login" ]; then
-            opkg update && opkg install shadow-login shadow-passwd shadow-useradd
-            if [ "$?" -ne 0 ]; then
-                echo -e "\e[1;31mPackage installation failed. Please check your internet connection and try again.\e[0m"
-                exit 1
-            fi
+        # if [ "$(readlink /bin/login)" != "/usrdata/opt/bin/login" ]; then
+        #     opkg update && opkg install shadow-login shadow-passwd shadow-useradd
+        #     if [ "$?" -ne 0 ]; then
+        #         echo -e "\e[1;31mPackage installation failed. Please check your internet connection and try again.\e[0m"
+        #         exit 1
+        #     fi
 
-            # Replace the login and passwd binaries and set home for root to a writable directory
-            rm /usrdata/opt/etc/shadow
-            rm /usrdata/opt/etc/passwd
-            cp /etc/shadow /usrdata/opt/etc/
-            cp /etc/passwd /usrdata/opt/etc
-            mkdir -p /usrdata/root/bin
-            touch /usrdata/root/.profile
-            echo "# Set PATH for all shells" > /usrdata/root/.profile
-            echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
-            chmod +x /usrdata/root/.profile
-            sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
-            rm /bin/login /usr/bin/passwd
-            ln -sf /usrdata/opt/bin/login /bin
-            ln -sf /usrdata/opt/bin/passwd /usr/bin/
-			ln -sf /usrdata/opt/bin/useradd /usr/bin/
-            echo -e "\e[1;31mPlease set the root password.\e[0m"
-            /usrdata/opt/bin/passwd
+        #     # Replace the login and passwd binaries and set home for root to a writable directory
+        #     rm /usrdata/opt/etc/shadow
+        #     rm /usrdata/opt/etc/passwd
+        #     cp /etc/shadow /usrdata/opt/etc/
+        #     cp /etc/passwd /usrdata/opt/etc
+        #     mkdir -p /usrdata/root/bin
+        #     touch /usrdata/root/.profile
+        #     echo "# Set PATH for all shells" > /usrdata/root/.profile
+        #     echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
+        #     chmod +x /usrdata/root/.profile
+        #     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
+        #     rm /bin/login /usr/bin/passwd
+        #     ln -sf /usrdata/opt/bin/login /bin
+        #     ln -sf /usrdata/opt/bin/passwd /usr/bin/
+		# 	ln -sf /usrdata/opt/bin/useradd /usr/bin/
+        #     echo -e "\e[1;31mPlease set the root password.\e[0m"
+        #     /usrdata/opt/bin/passwd
 
-            # Install basic and useful utilities
-            opkg install mc htop dfc lsof
-            ln -sf /usrdata/opt/bin/mc /bin
-            ln -sf /usrdata/opt/bin/htop /bin
-            ln -sf /usrdata/opt/bin/dfc /bin
-            ln -sf /usrdata/opt/bin/lsof /bin
-        fi
+        #     # Install basic and useful utilities
+        #     opkg install mc htop dfc lsof
+        #     ln -sf /usrdata/opt/bin/mc /bin
+        #     ln -sf /usrdata/opt/bin/htop /bin
+        #     ln -sf /usrdata/opt/bin/dfc /bin
+        #     ln -sf /usrdata/opt/bin/lsof /bin
+        # fi
 
-        if [ ! -f "/usrdata/root/.profile" ]; then
-            opkg update && opkg install shadow-useradd
-            mkdir -p /usrdata/root/bin
-            touch /usrdata/root/.profile
-            echo "# Set PATH for all shells" > /usrdata/root/.profile
-            echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
-            chmod +x /usrdata/root/.profile
-            sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
-        fi
+        # if [ ! -f "/usrdata/root/.profile" ]; then
+        #     opkg update && opkg install shadow-useradd
+        #     mkdir -p /usrdata/root/bin
+        #     touch /usrdata/root/.profile
+        #     echo "# Set PATH for all shells" > /usrdata/root/.profile
+        #     echo "export PATH=/bin:/usr/sbin:/usr/bin:/sbin:/usrdata/opt/sbin:/usrdata/opt/bin:/usrdata/root/bin" >> /usrdata/root/.profile
+        #     chmod +x /usrdata/root/.profile
+        #     sed -i '1s|/home/root:/bin/sh|/usrdata/root:/bin/bash|' /usrdata/opt/etc/passwd
+        # fi
     fi
-	if [ ! -f "/usrdata/opt/sbin/useradd" ]; then
-		echo "useradd does not exist. Installing shadow-useradd..."
-		opkg install shadow-useradd
-		else
-		echo "useradd already exists. Continuing..."
-	fi
+	# if [ ! -f "/usrdata/opt/sbin/useradd" ]; then
+	# 	echo "useradd does not exist. Installing shadow-useradd..."
+	# 	opkg install shadow-useradd
+	# 	else
+	# 	echo "useradd already exists. Continuing..."
+	# fi
     
-	if [ ! -f "/usr/bin/curl" ] && [ ! -f "/usrdata/opt/bin/curl" ]; then
-        echo "curl does not exist. Installing curl..."
-        opkg update && opkg install curl 
-        if [ "$?" -ne 0 ]; then
-            echo -e "\e[1;31mFailed to install curl. Please check your internet connection and try again.\e[0m"
-            exit 1
-        fi
-    else
-        echo "curl already exists. Continuing..."
-    fi
+	# if [ ! -f "/usr/bin/curl" ] && [ ! -f "/usrdata/opt/bin/curl" ]; then
+    #     echo "curl does not exist. Installing curl..."
+    #     opkg update && opkg install curl 
+    #     if [ "$?" -ne 0 ]; then
+    #         echo -e "\e[1;31mFailed to install curl. Please check your internet connection and try again.\e[0m"
+    #         exit 1
+    #     fi
+    # else
+    #     echo "curl already exists. Continuing..."
+    # fi
 }
 
 #Uninstall Entware if the Users chooses 
@@ -313,7 +313,7 @@ set_simpleadmin_passwd(){
 	wget -O /usrdata/root/bin/simplepasswd $GITROOT/simpleadmin/simplepasswd && chmod +x /usrdata/root/bin/simplepasswd
 	echo -e "\e[1;32mTo change your simpleadmin (admin) password in the future...\e[0m"
 	echo -e "\e[1;32mIn the console type simplepasswd and press enter\e[0m"
-	/usrdata/root/bin/simplepasswd
+	#/usrdata/root/bin/simplepasswd
 	
 }
 
