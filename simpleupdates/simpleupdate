@@ -2,7 +2,7 @@
 
 # Configuration and directories
 CONFIG_FILE="/usrdata/simpleupdates/simpleupdate.conf"
-GITUSER="BlueNecko"
+GITUSER="bluenecko"
 GITTREE="main"
 DIRECTORIES=("simpleadmin" "socat-at-bridge" "simplefirewall" "tailscale" "ttyd")
 BASE_URL="https://raw.githubusercontent.com/$GITUSER/quectel-rgmii-toolkit-MOD/$GITTREE"

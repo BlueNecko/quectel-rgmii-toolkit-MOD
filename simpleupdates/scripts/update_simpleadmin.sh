@@ -2,7 +2,7 @@
 
 # Define constants
 # Define GitHub repo info
-GITUSER="BlueNecko"
+GITUSER="bluenecko"
 REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
@@ -57,7 +57,7 @@ cat <<EOF > "$TMP_SCRIPT"
 #!/bin/bash
 
 # Define GitHub repo info
-GITUSER="BlueNecko"
+GITUSER="bluenecko"
 REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="development-SDXLEMUR"
 GITMAINTREE="SDXLEMUR"

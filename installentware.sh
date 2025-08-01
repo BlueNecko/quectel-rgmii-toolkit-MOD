@@ -1,5 +1,5 @@
 #!/bin/sh
-# Modified by BlueNecko to set up a proper entware environment for custom Quectel RG520F series LGA modems 
+# Modified by bluenecko to set up a proper entware environment for custom Quectel RG520F series LGA modems 
 TYPE='generic'
 #|---------|-----------------|
 #| TARGET  | Quectel Modem   |

@@ -2,7 +2,7 @@
 
 # Define toolkit paths
 export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usrdata/opt/bin:/usrdata/opt/sbin:/usrdata/root/bin
-GITUSER="BlueNecko"
+GITUSER="bluenecko"
 REPONAME="quectel-rgmii-toolkit-MOD"
 GITTREE="SDXLEMUR"
 GITMAINTREE="SDXLEMUR"
@@ -825,7 +825,7 @@ echo "                                           :+##+.            "
 
     echo -e "\e[92m"
     echo "Welcome to iamromulan's RGMII Toolkit script for Quectel RMxxx Series modems!"
-    echo "MODDED-BY:@BlueNecko"
+    echo "MODDED-BY:@bluenecko"
     echo "Visit https://github.com/iamromulan for more!"
     echo -e "\e[0m"
     echo "Select an option:"
